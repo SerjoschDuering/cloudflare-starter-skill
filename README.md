@@ -97,6 +97,80 @@ There are many ways to deploy a web app. Vercel, Netlify, AWS, GCP, Fly.io, Rail
 
 ---
 
+<details>
+<summary><h2>Glossary — Plain-English Tech Terms</h2></summary>
+
+New to all of this? Here's every technical term used in this repo, explained like you're not a developer — because you might not be (yet).
+
+### Building & Running
+
+| Term | What it actually means |
+|------|----------------------|
+| **Frontend** | The part of an app you see and interact with — buttons, forms, pages. It runs in your browser. |
+| **Backend** | The invisible part that does the work — processes logins, saves data, talks to the database. Runs on a server (or in our case, at the edge). |
+| **Fullstack** | Frontend + backend together. A "fullstack app" is the whole thing, not just one half. |
+| **API** (Application Programming Interface) | A set of URLs your frontend calls to talk to the backend. Like a restaurant menu — you don't go into the kitchen, you just order from the menu. Example: `GET /api/todos` returns your todo list. |
+| **Database** | Where your app stores information permanently — users, posts, orders, etc. Think: a really organized spreadsheet that your code can read and write to. |
+| **ORM** (Object-Relational Mapper) | A tool that lets you talk to the database using your programming language instead of writing raw SQL. Instead of `SELECT * FROM users`, you write `db.select().from(users)`. |
+| **Schema** | The structure of your database — what tables exist, what columns they have, what type of data goes in each column. Like a blueprint before you build the house. |
+| **Migration** | A file that changes your database structure. Adding a new column? That's a migration. They run in order so every copy of the database ends up the same. |
+
+### Deployment & Infrastructure
+
+| Term | What it actually means |
+|------|----------------------|
+| **Deploy / Deployment** | Putting your app on the internet so other people can use it. Before deployment, it only runs on your computer. After, it has a public URL anyone can visit. |
+| **Server** | A computer that's always on and connected to the internet, waiting to respond to requests. Traditionally you'd rent one and manage it yourself. |
+| **Serverless** | You don't manage any servers. You upload your code, and the provider runs it when someone makes a request. You pay per request, not per hour. |
+| **Edge** | Instead of running your code in one data center (say, Virginia), it runs in 300+ locations worldwide. Users in Tokyo hit a Tokyo server, users in Berlin hit a Berlin server. Faster for everyone. |
+| **CDN** (Content Delivery Network) | A network of servers around the world that caches your static files (images, CSS, JS) close to users. The edge is like a CDN, but for your code too. |
+| **Scales to zero** | When nobody is using your app, you pay nothing. No idle servers burning money. Traffic spikes? It scales up automatically. |
+| **Environment variables** | Secret settings (API keys, database passwords) stored outside your code. Your code reads them at runtime. This way secrets never end up in your GitHub repo. |
+| **Secrets** | Same as environment variables, but specifically for sensitive values (passwords, tokens). Stored encrypted. |
+
+### Tools & Workflow
+
+| Term | What it actually means |
+|------|----------------------|
+| **CLI** (Command Line Interface) | A text-based way to control software by typing commands. Instead of clicking buttons in a dashboard, you type `wrangler deploy` in your terminal. AI agents love CLIs because they can type commands for you. |
+| **Terminal** | The app where you type CLI commands. On Mac it's called Terminal, on Windows it's Command Prompt or PowerShell. |
+| **Wrangler** | Cloudflare's CLI tool. One command to create databases, deploy code, manage secrets, run locally, tail logs — everything. |
+| **npm** | A package manager for JavaScript. `npm install` downloads libraries your project needs. Think: an app store for code. |
+| **Git** | A tool that tracks every change you make to your code. Like version history in Google Docs, but for an entire project. |
+| **GitHub** | A website that hosts your Git repositories (projects) online. Also has tools for collaboration, CI/CD, and issue tracking. |
+| **CI/CD** (Continuous Integration/Deployment) | Automation that tests and deploys your code every time you push to GitHub. You push code → tests run → if they pass → app deploys. No manual steps. |
+| **GitHub Actions** | GitHub's built-in CI/CD system. You write a YAML file describing what should happen on push, and GitHub runs it for you. |
+
+### Cloudflare Services
+
+| Term | What it actually means |
+|------|----------------------|
+| **Workers** | Cloudflare's serverless functions. Your backend code runs here. Think of each Worker as a tiny server that spins up on demand at the edge. |
+| **D1** | Cloudflare's SQL database (built on SQLite). Where you store structured data — users, posts, orders. |
+| **R2** | Cloudflare's file storage (S3-compatible). For images, PDFs, videos, user uploads. Zero egress fees — you don't pay when people download files. |
+| **KV** (Key-Value store) | A super-fast cache. Store simple data like session tokens or feature flags. Reads are nearly instant globally. |
+| **Queues** | For background jobs. Instead of making the user wait while you send an email or process a file, you add a job to the queue and it runs later. |
+| **Hyperdrive** | A proxy that makes existing Postgres/MySQL databases faster by caching connections at the edge. Use this when your database is hosted somewhere else. |
+| **Workers AI** | Run AI models (text generation, image recognition) directly on Cloudflare's edge. No OpenAI key needed for basic inference. |
+| **Turnstile** | Bot protection that replaces CAPTCHAs. Add it to forms to verify real humans without annoying "click all the traffic lights" puzzles. |
+
+### Code Patterns
+
+| Term | What it actually means |
+|------|----------------------|
+| **SPA** (Single-Page Application) | A web app that loads once and then updates dynamically without full page reloads. Gmail is an SPA. |
+| **SSR** (Server-Side Rendering) | The server generates HTML before sending it to the browser. Faster initial load, better for SEO. |
+| **Framework** | Pre-built code that gives you structure and shortcuts. React is a frontend framework, Hono is a backend framework. You build *on top of* them. |
+| **Routing** | Deciding what to show based on the URL. `/about` shows the about page, `/todos/5` shows todo #5. |
+| **State management** | How your app keeps track of things in memory — which user is logged in, what's in the shopping cart, whether a modal is open. |
+| **Middleware** | Code that runs *between* receiving a request and sending a response. Common uses: check if the user is logged in, log the request, add security headers. |
+| **Token** | A string of random characters that proves who you are. After login, the server gives you a token. You send it with every request so the server knows it's you. |
+| **Binding** | Cloudflare's way of connecting a Worker to a service (D1, R2, KV). You declare bindings in `wrangler.toml` and access them in your code via `env.MY_DB`. |
+
+</details>
+
+---
+
 ## Architecture at a Glance
 
 ```
