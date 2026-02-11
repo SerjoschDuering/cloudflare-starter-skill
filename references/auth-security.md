@@ -40,6 +40,12 @@ npm install better-auth
 npm install -D @better-auth/cli
 ```
 
+> **IMPORTANT:** Better Auth requires the `nodejs_compat` compatibility flag in `wrangler.toml`
+> because it uses `node:async_hooks` internally. Without it, you get runtime errors.
+> ```toml
+> compatibility_flags = ["nodejs_compat"]
+> ```
+
 ### Auth Configuration (API Side)
 
 ```typescript
@@ -54,6 +60,8 @@ type AuthEnv = { DB: D1Database; BETTER_AUTH_SECRET: string; BETTER_AUTH_URL: st
 export function createAuth(env: AuthEnv) {
   const db = drizzle(env.DB)
 
+  // IMPORTANT: drizzle adapter needs explicit { provider: 'sqlite' }
+  // If you have a Drizzle schema, also pass { schema } to avoid BetterAuthError
   return betterAuth({
     database: drizzleAdapter(db, { provider: 'sqlite' }),
     secret: env.BETTER_AUTH_SECRET,
@@ -87,6 +95,12 @@ npx drizzle-kit generate
 wrangler d1 migrations apply my-db          # local
 wrangler d1 migrations apply my-db --remote  # production
 ```
+
+> **CLI caveat:** `@better-auth/cli generate` does NOT work with the factory-pattern
+> auth config required for Workers (where `env` is only available per-request). The CLI
+> expects a default export or top-level `auth` variable. **Workaround:** Create the
+> migration SQL manually with the tables: `user`, `session`, `account`, `verification`.
+> See Better Auth source `get-tables.ts` for exact column definitions.
 
 ### Mount Auth Routes in Hono
 

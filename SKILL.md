@@ -18,7 +18,7 @@ version: 0.1.0
 # Cloudflare Fullstack Deployment
 
 Deploy fullstack web applications on Cloudflare's edge network. Everything runs at the edge
-(300+ data centers), scales to zero, and has a generous free tier requiring no credit card.
+(300+ data centers), scales to zero, and has a generous free tier requiring no credit card (except R2, which is free but requires a credit card on file).
 
 ## Quick Start
 
@@ -60,7 +60,7 @@ wrangler deploy
 | API / serverless functions | **Workers** | 100K req/day |
 | Frontend SPA or SSR | **Workers + Static Assets** | Unlimited bandwidth |
 | Relational database (SQL) | **D1** (SQLite) | 5M reads/day, 5GB |
-| File/image/video storage | **R2** (S3-compatible) | 10GB, zero egress |
+| File/image/video storage | **R2** (S3-compatible) | 10GB, zero egress (credit card required) |
 | Sessions, config, cache | **KV** (key-value) | 100K reads/day |
 | User authentication | **Better Auth** (OSS) | Free |
 | Background jobs | **Queues** | 10K ops/day |

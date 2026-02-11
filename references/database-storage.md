@@ -135,6 +135,10 @@ await self.env.DB.prepare("INSERT INTO users (name) VALUES (?)").bind("Alice").r
 
 Zero egress fees. Fully S3-compatible API. Store files, images, videos, backups.
 
+> **Prereq:** R2 is free but **requires a credit card** on the Cloudflare account.
+> Enable it first: Dashboard → R2 Object Storage → "Get Started". CLI commands will
+> fail with error 10042 until R2 is activated in the dashboard.
+
 **Docs:** https://developers.cloudflare.com/r2/
 
 ### Pricing
@@ -242,7 +246,7 @@ Globally distributed, eventually consistent. Optimized for high-read, low-write.
 - **Eventually consistent** - writes propagate globally in ~60 seconds
 - 1 write/second per key limit
 - Hot keys cached at edge for <10ms reads
-- TTL (time-to-live) support per key
+- TTL (time-to-live) support per key — **minimum TTL is 60 seconds** (lower values cause 500 errors)
 - NOT for data needing strong consistency or frequent writes
 
 ### CLI Commands
@@ -310,6 +314,11 @@ Guaranteed message delivery. Batching, retries, dead letter queues.
 
 ### Wrangler Config
 
+```bash
+# Create queue (IMPORTANT: must specify retention period, default exceeds API max)
+wrangler queues create my-queue --message-retention-period-secs 86400
+```
+
 ```toml
 [[queues.producers]]
 binding = "MY_QUEUE"
@@ -320,6 +329,10 @@ queue = "my-queue"
 max_batch_size = 10
 max_batch_timeout = 30
 ```
+
+> **Local dev note:** Queue consumers do NOT fire during `wrangler dev`. The HTTP
+> producer endpoints work locally, but the consumer handler only executes in production
+> after `wrangler deploy`. Use `wrangler tail` to verify consumer processing.
 
 ### Usage
 

@@ -30,11 +30,13 @@ uv run pywrangler types
 
 ## wrangler.toml for Python
 
+> **Note:** `pywrangler init` creates `wrangler.jsonc` (not `.toml`). Both formats work.
+
 ```toml
 name = "my-python-api"
 main = "src/entry.py"                          # .py file, not .ts!
 compatibility_flags = ["python_workers"]       # REQUIRED (beta flag)
-compatibility_date = "2025-01-01"
+compatibility_date = "2025-09-01"              # Must be >= 2025-08-14 for class-based handlers
 
 [[d1_databases]]
 binding = "DB"
@@ -69,6 +71,15 @@ dev = ["workers-py"]
 **No pip, no requirements.txt.** Use `uv` + `pyproject.toml`.
 
 ---
+
+## Handler Pattern (compatibility_date matters!)
+
+> **CRITICAL:** The `compatibility_date` determines which handler pattern the runtime expects.
+> - `>= 2025-08-14`: Class-based `WorkerEntrypoint.fetch()` (current, shown below)
+> - `< 2025-08-14`: Old `on_fetch` top-level function (deprecated)
+>
+> If you get `TypeError: Method on_fetch does not exist`, your compat date is too old.
+> Set it to `2025-09-01` or later.
 
 ## Basic Python Worker
 

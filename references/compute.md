@@ -84,12 +84,16 @@ ENVIRONMENT = "production"
 
 ```bash
 wrangler dev                  # Local dev server (localhost:8787)
-wrangler dev --remote         # Local dev with real CF bindings
+wrangler dev --remote         # Local dev with real CF bindings (REQUIRED for AI, Queues consumer)
 wrangler deploy               # Deploy to production
 wrangler deploy --env preview # Deploy to preview environment
 wrangler tail                 # Live-stream logs
 wrangler whoami               # Check auth status
 ```
+
+> **When `--remote` is required:** Workers AI has NO local emulation — `wrangler dev`
+> without `--remote` returns unhelpful errors. Queue consumers also only fire in
+> production (not during local dev). Always use `--remote` when testing AI or Queues.
 
 **Docs:** https://developers.cloudflare.com/workers/wrangler/commands/
 
