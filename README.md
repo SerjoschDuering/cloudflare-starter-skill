@@ -8,6 +8,8 @@ Built for students and beginners. You make the decisions — the AI executes.
 
 Works with: Claude Code, Cursor, Windsurf, Codex, GitHub Copilot, Gemini CLI, Roo Code, and [25+ other tools](https://agentskills.io).
 
+> **This is NOT a project template.** Don't clone this repo and build inside it. This is a *skill* — a knowledge pack you add to your AI coding tool. Your project lives in its own directory. See [How to Install](#how-to-install) below.
+
 ---
 
 ## What Is a "Skill"?
@@ -211,44 +213,50 @@ Everything runs at the edge (300+ data centers). No servers to manage.
 
 ---
 
-## Setup by Tool
+## How to Install
 
-### Claude Code
+A skill is **not** something you install globally or run as a command. It's a folder of markdown files that you place inside your project so your AI coding tool can discover and read them.
 
-```bash
-# Install the skill globally
-claude skill add --global SerjoschDuering/cloudflare-starter-skill
-```
-
-Or clone locally:
+**The workflow:**
 
 ```bash
+# 1. Create your project (this is YOUR workspace — you build here)
+npm create cloudflare@latest my-app
+cd my-app
+
+# 2. Add the skill to your project (the AI reads from here — you don't touch these files)
 git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .claude/skills/cloudflare
+
+# 3. Open your AI coding tool and start building
+# "I want to build a todo app with a database"
+# The agent will automatically read the skill files and guide you.
 ```
 
-### Cursor / Windsurf
+That's it. The skill lives in `.claude/skills/cloudflare/` inside your project. Your AI tool auto-discovers it.
 
-Clone into your project — the tool picks up `SKILL.md` automatically:
+### Tool-specific paths
 
-```bash
-git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .skills/cloudflare
-```
+Different tools look for instruction files in different places. Clone the skill into the path your tool expects:
 
-### Codex / Gemini CLI / Cline / Roo Code
+| Tool | Clone command |
+|------|--------------|
+| **Claude Code** | `git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .claude/skills/cloudflare` |
+| **Cursor** | `git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .cursor/skills/cloudflare` |
+| **Windsurf** | `git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .windsurf/skills/cloudflare` |
+| **Codex CLI** | `git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .codex/skills/cloudflare` |
+| **Gemini CLI** | `git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .gemini/skills/cloudflare` |
+| **Roo Code / Cline** | `git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .roo/skills/cloudflare` |
+| **Any other tool** | `git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .skills/cloudflare` |
 
-These tools read `AGENTS.md` (included as a mirror of `SKILL.md`):
+> **Tip:** Add the skill directory to your project's `.gitignore` so it doesn't get committed into your own repo:
+> ```bash
+> echo ".claude/skills/cloudflare" >> .gitignore
+> ```
 
-```bash
-git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git .skills/cloudflare
-```
-
-### Any Other Tool
-
-It's just markdown. Clone and point your tool at the files:
-
-```bash
-git clone https://github.com/SerjoschDuering/cloudflare-starter-skill.git
-```
+> **Alternative — git submodule:** If you *want* the skill tracked in your repo (e.g., for team projects), use a submodule instead:
+> ```bash
+> git submodule add https://github.com/SerjoschDuering/cloudflare-starter-skill.git .claude/skills/cloudflare
+> ```
 
 ---
 
