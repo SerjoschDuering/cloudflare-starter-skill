@@ -237,9 +237,20 @@ The agent reads the right reference files and guides you through every step — 
 
 ---
 
+## Work in Progress
+
+This skill is **actively evolving**. Cloudflare ships fast — APIs change, new services launch, CLI flags get deprecated. The reference files may not always be perfectly up to date.
+
+That's by design. Every AI agent that uses this skill is encouraged to **fix inaccuracies on the spot** — update a command, correct an import, adjust for a new API version. If you (or your agent) spot something wrong, you're improving it for everyone who comes after.
+
 ## Contributing
 
-Found an outdated API, broken command, or incorrect pattern? This skill is designed to be **self-correcting** — open a PR or issue and it benefits every future session.
+PRs and issues welcome. Common contributions:
+
+- **Fix outdated patterns** — a CLI flag changed, an API was renamed
+- **Add missing services** — Cloudflare launched something new
+- **Improve explanations** — a reference file was confusing or incomplete
+- **Report broken commands** — something that worked last month doesn't anymore
 
 ---
 
