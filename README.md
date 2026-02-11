@@ -2,7 +2,7 @@
 
 **Deploy fullstack web apps on Cloudflare — guided by your AI coding agent.**
 
-An open skill that teaches any AI coding agent how to build and deploy fullstack applications on Cloudflare's edge network. Free tier, no credit card, scales to zero.
+An open skill that teaches any AI coding agent how to build and deploy fullstack applications on Cloudflare's edge network. Free tier, no credit card, scales to zero. Includes SaaS billing patterns — Stripe integration, token/credit platforms, and multi-app billing.
 
 Built for students and beginners. You make the decisions — the AI executes.
 
@@ -94,6 +94,8 @@ There are many ways to deploy a web app. Vercel, Netlify, AWS, GCP, Fly.io, Rail
 | Background jobs | **Queues** | 10K ops/day |
 | AI inference | **Workers AI** | 10K neurons/day |
 | Bot/spam protection | **Turnstile** | 1M req/month |
+| Billing (single product) | **Stripe** + Workers | See `saas-billing.md` |
+| Token platform (multi-app) | **Stripe** + Token Service | See `token-service.md` |
 
 > **Note:** The patterns in this skill (domain-driven structure, progressive disclosure, ARCHITECTURE.md) work with *any* provider. If you later switch to Vercel or AWS, the architectural knowledge transfers.
 
@@ -210,6 +212,9 @@ Everything runs at the edge (300+ data centers). No servers to manage.
 | [`references/python-patterns.md`](references/python-patterns.md) | FastAPI on Workers via Pyodide WASM |
 | [`references/architecture-bestpractices.md`](references/architecture-bestpractices.md) | Project structure, state management, security, ARCHITECTURE.md template |
 | [`references/debugging-logging.md`](references/debugging-logging.md) | Structured logging, error tracking, wrangler tail |
+| [`references/saas-billing.md`](references/saas-billing.md) | Stripe billing for a single product (subscriptions, one-time payments) |
+| [`references/token-service.md`](references/token-service.md) | Token/credits platform — central wallet, Stripe checkout, multi-app billing |
+| [`references/token-apps.md`](references/token-apps.md) | Build apps that consume tokens from the platform |
 
 ---
 

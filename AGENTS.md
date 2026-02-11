@@ -53,6 +53,8 @@ wrangler deploy
 | Existing Postgres/MySQL | **Hyperdrive** (proxy) | Included (100K queries/day free) |
 | AI inference | **Workers AI** | 10K neurons/day |
 | Bot/spam protection | **Turnstile** | 1M req/month |
+| Billing (single product) | **Stripe** + Workers | See `saas-billing.md` |
+| Token platform (multi-app) | **Stripe** + Token Service | See `token-service.md` |
 
 ## Dashboard vs CLI
 
@@ -117,6 +119,9 @@ All resource creation (D1, R2, KV), deployments, migrations, and secrets are han
 | Writing a Python backend (FastAPI on Workers) | `references/python-patterns.md` |
 | Structuring projects, state management, security | `references/architecture-bestpractices.md` |
 | Something broke and need to debug | `references/debugging-logging.md` |
+| Adding Stripe billing to a single product | `references/saas-billing.md` |
+| Building a token/credits platform (multi-app billing) | `references/token-service.md` |
+| Building apps that consume tokens from the platform | `references/token-apps.md` |
 
 ## Work in Progress — Self-Correcting Skill
 

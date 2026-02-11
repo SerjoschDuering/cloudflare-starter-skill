@@ -6,10 +6,12 @@ description: >
   "deploy python workers", "set up wrangler", "add edge functions", "cloudflare CI/CD",
   "serverless deployment", "set up cloudflare pages", "debug cloudflare worker",
   "cloudflare auth", "D1 migrations", "wrangler deploy", "what can I build on cloudflare",
-  "help me start a project", or mentions Cloudflare services (Workers, D1, R2, KV, Queues,
+  "help me start a project", "add stripe billing", "token pricing", "usage-based billing",
+  "saas billing", "credits system", "token wallet", "multi-app platform",
+  or mentions Cloudflare services (Workers, D1, R2, KV, Queues,
   Turnstile, Hyperdrive). Covers JS/TS and Python backends, static frontends, databases,
-  object storage, auth, secrets, GitHub Actions, debugging, project ideas, and architecture
-  best practices. Primary audience: AI coding agents building on behalf of students.
+  object storage, auth, billing (Stripe), token/credit platforms, secrets, GitHub Actions,
+  debugging, project ideas, and architecture best practices. Primary audience: AI coding agents building on behalf of students.
   Contains executable patterns, not just documentation. Suitable for complete beginners
   with no deployment experience — students make architecture decisions, the AI executes.
 version: 0.1.0
@@ -67,6 +69,8 @@ wrangler deploy
 | Existing Postgres/MySQL | **Hyperdrive** (proxy) | Included (100K queries/day free) |
 | AI inference | **Workers AI** | 10K neurons/day |
 | Bot/spam protection | **Turnstile** | 1M req/month |
+| Billing (single product) | **Stripe** + Workers | See `saas-billing.md` |
+| Token platform (multi-app) | **Stripe** + Token Service | See `token-service.md` |
 
 ## Dashboard vs CLI
 
@@ -131,6 +135,9 @@ All resource creation (D1, R2, KV), deployments, migrations, and secrets are han
 | Writing a Python backend (FastAPI on Workers) | `references/python-patterns.md` |
 | Structuring projects, state management, security | `references/architecture-bestpractices.md` |
 | Something broke and need to debug | `references/debugging-logging.md` |
+| Adding Stripe billing to a single product | `references/saas-billing.md` |
+| Building a token/credits platform (multi-app billing) | `references/token-service.md` |
+| Building apps that consume tokens from the platform | `references/token-apps.md` |
 
 ## Work in Progress — Self-Correcting Skill
 
