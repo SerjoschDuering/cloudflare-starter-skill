@@ -1,5 +1,5 @@
 ---
-name: Cloudflare Fullstack Deployment
+name: cloudflare
 description: >
   This skill should be used when the user asks to "deploy to cloudflare", "set up cloudflare workers",
   "create a fullstack app on cloudflare", "set up D1 database", "configure R2 storage",
