@@ -154,6 +154,60 @@ see **`references/python-patterns.md`**
 
 ---
 
+## Workers AI — Edge Inference
+
+Run LLMs, embeddings, image generation, and more directly from Workers. No API key, no credit card, no external service — just a wrangler binding.
+
+### Pricing
+
+| | Free | Paid |
+|---|---|---|
+| Neurons | 10,000/day | $0.011/1,000 neurons |
+| Token pricing (LLM) | Same free allowance | Llama 3.1 8B: ~$0.03/M input, ~$0.20/M output |
+| Credit card | **Not required** | Not required |
+| API key | **Not required** — `env.AI` binding | Same |
+
+### Wrangler Config
+
+```toml
+[ai]
+binding = "AI"
+```
+
+### Usage
+
+```typescript
+const response = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: userPrompt },
+  ],
+  max_tokens: 2048,
+  temperature: 0.7,
+})
+const text = response.response // string
+```
+
+### Key Models (Feb 2026)
+
+| Model | ID | Use case |
+|---|---|---|
+| Llama 4 Scout 17B | `@cf/meta/llama-4-scout-17b-16e-instruct` | Best quality, multimodal |
+| Llama 3.3 70B | `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | High quality text gen |
+| Llama 3.1 8B | `@cf/meta/llama-3.1-8b-instruct` | Fast, cheap, good for most tasks |
+| Llama 3.2 11B Vision | `@cf/meta/llama-3.2-11b-vision-instruct` | Image understanding |
+| BGE Base EN | `@cf/baai/bge-base-en-v1.5` | Text embeddings |
+
+Full catalog: https://developers.cloudflare.com/workers-ai/models/
+
+### Local Dev
+
+Workers AI has **no local emulation**. You must use `wrangler dev --remote` to test AI calls. Without `--remote`, AI calls return unhelpful errors.
+
+**Docs:** https://developers.cloudflare.com/workers-ai/
+
+---
+
 ## Static Assets (Workers)
 
 Workers can serve static files (HTML, CSS, JS, images) directly.

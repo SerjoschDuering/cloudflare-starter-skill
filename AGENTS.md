@@ -51,7 +51,7 @@ wrangler deploy
 | User authentication | **Better Auth** (OSS) | Free |
 | Background jobs | **Queues** | 10K ops/day |
 | Existing Postgres/MySQL | **Hyperdrive** (proxy) | Included (100K queries/day free) |
-| AI inference | **Workers AI** | 10K neurons/day |
+| AI inference | **Workers AI** | 10K neurons/day, no credit card, no API key — just `[ai]` binding |
 | Bot/spam protection | **Turnstile** | 1M req/month |
 
 ## Dashboard vs CLI
@@ -116,6 +116,7 @@ All resource creation (D1, R2, KV), deployments, migrations, and secrets are han
 | Writing JS/TS backend + frontend (Hono, Drizzle, React) | `references/js-patterns.md` |
 | Writing a Python backend (FastAPI on Workers) | `references/python-patterns.md` |
 | Structuring projects, state management, security | `references/architecture-bestpractices.md` |
+| Using Workers AI (LLMs, embeddings, image gen) | `references/workers-ai.md` |
 | Something broke and need to debug | `references/debugging-logging.md` |
 
 ## Work in Progress — Self-Correcting Skill
