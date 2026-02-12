@@ -46,6 +46,20 @@ npm install -D @better-auth/cli
 > compatibility_flags = ["nodejs_compat"]
 > ```
 
+> **CPU LIMIT FIX:** Better Auth uses bcrypt by default, which **exceeds the Workers free-tier
+> CPU limit (10ms)**. You'll get Error 1102 on signup/login. Fix: provide a custom PBKDF2
+> hasher using Web Crypto API (runs natively on Workers, well within limits):
+> ```typescript
+> emailAndPassword: {
+>   enabled: true,
+>   password: {
+>     hash: async (password) => { /* PBKDF2 — see auth.ts example below */ },
+>     verify: async ({ password, hash }) => { /* PBKDF2 verify */ },
+>   },
+> },
+> ```
+> See the full PBKDF2 implementation in the "Auth Configuration" section below.
+
 ### Auth Configuration (API Side)
 
 ```typescript
@@ -55,6 +69,36 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { drizzle } from 'drizzle-orm/d1'
 
 type AuthEnv = { DB: D1Database; BETTER_AUTH_SECRET: string; BETTER_AUTH_URL: string }
+
+// Web Crypto PBKDF2 hasher — bcrypt exceeds Workers free-tier CPU limits (10ms)
+async function hashPassword(password: string): Promise<string> {
+  const salt = crypto.getRandomValues(new Uint8Array(16))
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']
+  )
+  const hash = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' }, key, 256
+  )
+  const saltB64 = btoa(String.fromCharCode(...salt))
+  const hashB64 = btoa(String.fromCharCode(...new Uint8Array(hash)))
+  return `pbkdf2:100000:${saltB64}:${hashB64}`
+}
+
+async function verifyPassword(data: { password: string; hash: string }): Promise<boolean> {
+  const parts = data.hash.split(':')
+  if (parts[0] !== 'pbkdf2') return false
+  const iterations = parseInt(parts[1])
+  const salt = Uint8Array.from(atob(parts[2]), c => c.charCodeAt(0))
+  const expected = atob(parts[3])
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(data.password), 'PBKDF2', false, ['deriveBits']
+  )
+  const hash = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, 256
+  )
+  const actual = String.fromCharCode(...new Uint8Array(hash))
+  return actual === expected
+}
 
 // Factory function — D1 binding only available inside request handlers, not at module level
 export function createAuth(env: AuthEnv) {
@@ -67,12 +111,16 @@ export function createAuth(env: AuthEnv) {
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
     basePath: '/auth',  // Mount at /auth/* (not default /api/auth) to match Vite proxy
-    emailAndPassword: { enabled: true },
-    // OAuth providers (optional):
-    // socialProviders: {
-    //   google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET },
-    //   github: { clientId: env.GITHUB_CLIENT_ID, clientSecret: env.GITHUB_CLIENT_SECRET },
-    // },
+    emailAndPassword: {
+      enabled: true,
+      password: { hash: hashPassword, verify: verifyPassword },  // PBKDF2 instead of bcrypt
+    },
+    // IMPORTANT: When frontend (Pages) and API (Worker) are on different origins,
+    // Better Auth rejects requests with "Invalid origin". Add all frontend origins here:
+    trustedOrigins: [
+      'https://my-app.pages.dev',    // Cloudflare Pages production
+      'http://localhost:5173',         // Vite dev server
+    ],
   })
 }
 ```

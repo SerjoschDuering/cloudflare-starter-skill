@@ -22,12 +22,42 @@ wrangler d1 migrations apply my-db --remote
 wrangler deploy
 # Output: https://my-api.username.workers.dev
 
-# 3. Build frontend with API URL baked in
-VITE_API_URL=https://my-api.username.workers.dev npm run build
+# 3. Build frontend (NO env var needed if using Pages Functions proxy — see below)
+npm run build
 
-# 4. Deploy frontend
-wrangler pages deploy ./dist --project-name=my-client
+# 4. Deploy frontend (wrangler auto-detects functions/ directory)
+wrangler pages deploy ./dist --project-name=my-client --commit-dirty=true
 ```
+
+### Pages Functions Proxy (RECOMMENDED for API routing)
+
+When frontend (Pages) and API (Worker) are separate, the frontend uses relative
+paths (`/api/...`). You need a proxy. **DO NOT use `_redirects` with status 200 —
+Cloudflare Pages does NOT support proxy mode unlike Netlify.** Use Pages Functions instead:
+
+```typescript
+// client/functions/api/[[path]].ts — proxies /api/* to Workers API
+const API_ORIGIN = 'https://my-api.username.workers.dev'
+
+export const onRequest: PagesFunction = async ({ request }) => {
+  const url = new URL(request.url)
+  const target = new URL(url.pathname + url.search, API_ORIGIN)
+  const headers = new Headers(request.headers)
+  headers.set('Host', new URL(API_ORIGIN).host)
+  return fetch(target.toString(), {
+    method: request.method,
+    headers,
+    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
+  })
+}
+```
+
+Create matching files for each route prefix that needs proxying:
+- `functions/api/[[path]].ts` — proxies `/api/*`
+- `functions/auth/[[path]].ts` — proxies `/auth/*`
+
+The `functions/` directory must be at the same level as `dist/` (in the project root,
+not inside dist). `wrangler pages deploy` auto-detects and bundles them.
 
 ### Provision All Resources from CLI
 ```bash
@@ -322,7 +352,18 @@ Skip deploy with commit message prefix: `[CI Skip]` or `[CF-Pages-Skip]`
 3. **.gitignore** must include: `.dev.vars*`, `.env*`, `.wrangler/`
 4. **Separate databases per environment** - production and preview should use different D1 databases
 5. **Preview deploys on PRs** - catch bugs before they hit production
-6. **Deploy API before client** - client build needs the API URL
+6. **Deploy API before client** - client needs a working API endpoint to proxy to
+
+## Common Gotchas
+
+1. **Pages `_redirects` does NOT support proxy (200 status)** — unlike Netlify. You MUST
+   use Pages Functions (`functions/` dir) to proxy API calls to a separate Worker. See above.
+2. **Better Auth "Invalid origin"** — when Pages (frontend) and Workers (API) are on
+   different domains, add the Pages URL to `trustedOrigins` in your Better Auth config.
+3. **Duplicate route files** — TanStack Router's file-based routing will error if both
+   `.tsx` and `.js` versions of the same route exist. Remove duplicates before building.
+4. **`wrangler pages deploy` picks up functions/** — the `functions/` directory must be
+   relative to your working directory (not inside `dist/`). Wrangler auto-detects and bundles them.
 
 ---
 
